@@ -30,8 +30,8 @@ public class MecanumTeleOp extends OpMode {
     double rightFrontPower;
     double leftBackPower;
     double rightBackPower;
-    double intakePower;
 
+    boolean wasPressed = false;
     @Override
     public void init() {
         leftFrontDrive = hardwareMap.get(DcMotor.class, "FL");
@@ -103,11 +103,17 @@ public class MecanumTeleOp extends OpMode {
     }
 
     void launch() {
-        if (gamepad1.right_bumper) {
-            launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
+        if (gamepad1.right_bumper && !wasPressed) {
+            if (launcher.getVelocity() == 0) {
+                launcher.setVelocity(LAUNCHER_TARGET_VELOCITY);
+            }
+            else {
+                launcher.setVelocity(0);
+            }
+            wasPressed = true;
         }
-        else {
-            launcher.setVelocity(0);
+        else if (!gamepad1.right_bumper) {
+            wasPressed = false;
         }
 
         if (gamepad1.left_bumper) {
